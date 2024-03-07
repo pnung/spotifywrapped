@@ -1,8 +1,9 @@
-package com.example.spotifywrapped;
+package com.example.spotifywrapped.spotifyAPI;
 
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.spotifywrapped.R;
 import com.example.spotifywrapped.spotifyAPI.APIHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
