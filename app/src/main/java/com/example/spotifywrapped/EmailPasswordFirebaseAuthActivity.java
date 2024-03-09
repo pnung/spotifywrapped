@@ -17,15 +17,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthEmailException;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.rpc.context.AttributeContext;
 
-public class EmailPasswordFirebaseAuth extends AppCompatActivity {
+public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
 
     //tag for logging information
-    private static final String TAG = "EmailPasswordFirebaseAuthClass";
+    private static final String TAG = "EmailPasswordFirebaseAuthActivityClassTag";
 
     private FirebaseAuth mAuth;
 
@@ -71,6 +68,21 @@ public class EmailPasswordFirebaseAuth extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
+
+        //setup click listener to tell users that passwords must be at least 6 characters when they are creating an account
+        binding.emailPassLayoutPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pageStateTextView.equals(getResources().getString(R.string.Creation_Page_State))) {
+                    if (binding.emailPassLayoutPassword.getText().length() < 6) {
+                        Toast toast = Toast.makeText(EmailPasswordFirebaseAuthActivity.this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                }
+            }
+        });
+
+
         //button setups
 
         //clicking this button changes the page to the create account state
@@ -99,7 +111,7 @@ public class EmailPasswordFirebaseAuth extends AppCompatActivity {
                     signIn(emailEntry.getText().toString(), passwordEntry.getText().toString());
                 } else {
                     CharSequence errorMessage = "An error occurred. Please try again.";
-                    Toast errorPopUp = Toast.makeText(EmailPasswordFirebaseAuth.this, errorMessage, Toast.LENGTH_LONG);
+                    Toast errorPopUp = Toast.makeText(EmailPasswordFirebaseAuthActivity.this, errorMessage, Toast.LENGTH_LONG);
                     errorPopUp.show();
                 }
             }
@@ -115,11 +127,11 @@ public class EmailPasswordFirebaseAuth extends AppCompatActivity {
                     Log.d(TAG, "signInWithEmail:success");
 
                     //go back to main activity
-                    startActivity(new Intent(EmailPasswordFirebaseAuth.this, MainActivity.class));
+                    returnToMainActivity();
                 } else {
                     //if sign in fails, display error message
                     Log.w(TAG, "signInWithEmail:failure", task.getException());
-                    Toast.makeText(EmailPasswordFirebaseAuth.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EmailPasswordFirebaseAuthActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -134,12 +146,12 @@ public class EmailPasswordFirebaseAuth extends AppCompatActivity {
                     Log.d(TAG, "createUserWithEmail:success");  //send the info to logcat, basically
 
                     //go back to main activity since creating account also signs in
-                    startActivity(new Intent(EmailPasswordFirebaseAuth.this, MainActivity.class));
+                    returnToMainActivity();
 
                 } else {
                     //if sign in fails, display error message
                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                    Toast.makeText(EmailPasswordFirebaseAuth.this, "Authenticationfailed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EmailPasswordFirebaseAuthActivity.this, "Authenticationfailed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -153,7 +165,15 @@ public class EmailPasswordFirebaseAuth extends AppCompatActivity {
         //check if user is signed in (non-null) and update UI accordingly
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) { //user is signed in
-            //go do some other activity
+            //go back to main
+            returnToMainActivity();
         }
+    }
+
+    /**
+     * Helper method to return to the main activity
+     */
+    private void returnToMainActivity() {
+        startActivity(new Intent(EmailPasswordFirebaseAuthActivity.this, MainActivity.class));
     }
 }

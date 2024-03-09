@@ -3,6 +3,7 @@ package com.example.spotifywrapped;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,11 +12,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivityClassTag";
 
     private ActivityMainBinding binding;
 
@@ -39,13 +40,61 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+        //TODO decide if we want to force users to the sign in screen before doing anything or if we want to default to not that but have logic that still forces a sign in before doing anything
+        //rn the code below forces the user to the login screen if not signed in
+
         //check if user is authorized
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             //user is authorized logic
-            System.out.println(user.toString());
+
+            //debugging: displays email of signed in user
+            binding.textView.setText(user.getEmail());
         } else {
-            startActivity(new Intent(this, EmailPasswordFirebaseAuth.class));
+            startActivity(new Intent(this, EmailPasswordFirebaseAuthActivity.class));
         }
     }
+
+
+    /**
+     * Function to sign out the current user
+     */
+    public void signOut() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseAuth.getInstance().signOut();
+        }
+    }
+
+    /**
+     * Function to delete a user. starts a new activity and asks user to input info to confirm. //TODO actually test if delete works properly lol
+     */
+    public void deleteUser() {
+        startActivity(new Intent(MainActivity.this, DeleteUserActivity.class));
+    }
+
+
+    /**
+     * //TODO Function to change a user's email
+     */
+    public void changeEmail() {
+
+    }
+
+
+    /**
+     * //TODO Function to change a user's name (i think this is a thing)
+     */
+    public void changeName() {
+
+    }
+
+    /**
+     * //TODO Function to change a user's password
+     */
+    public void changePassword() {
+
+    }
+
+
 }

@@ -57,9 +57,11 @@
     <string name="login_failed">"Login failed"</string>
     <string name="sample_email_hint">user@email.com</string>
     <string name="password_hint">password</string>
-    <string name="log_in_button">Login</string>
-    <string name="create_account_button">Create Account</string>
+    <string name="log_in_button">Login Page</string>
+    <string name="create_account_button">Create Account Page</string>
     <string name="submit_button">Submit</string>
     <string name="LogIn_Page_State">Log In To Your Account</string>
     <string name="Creation_Page_State">Create A New Account</string>
+    <string name="back_button">Back</string>
+    <string name="delete_account_text">Delete Account</string>
 </resources>
