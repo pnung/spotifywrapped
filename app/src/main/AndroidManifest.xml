@@ -10,8 +10,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Spotifywrapped"
+        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
         tools:targetApi="31">
+        <!--Changed the theme to be a NoActionBar one -->
+
         <activity
             android:name=".EmailPasswordFirebaseAuth"
             android:exported="false" />

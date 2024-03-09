@@ -55,4 +55,11 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="sample_email_hint">user@email.com</string>
+    <string name="password_hint">password</string>
+    <string name="log_in_button">Login</string>
+    <string name="create_account_button">Create Account</string>
+    <string name="submit_button">Submit</string>
+    <string name="LogIn_Page_State">Log In To Your Account</string>
+    <string name="Creation_Page_State">Create A New Account</string>
 </resources>
