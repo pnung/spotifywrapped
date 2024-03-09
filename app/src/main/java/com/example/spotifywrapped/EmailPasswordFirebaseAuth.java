@@ -1,18 +1,31 @@
 package com.example.spotifywrapped;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spotifywrapped.databinding.ActivityEmailPasswordFirebaseAuthBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthEmailException;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.rpc.context.AttributeContext;
 
 public class EmailPasswordFirebaseAuth extends AppCompatActivity {
+
+    //tag for logging information
+    private static final String TAG = "EmailPasswordFirebaseAuthClass";
 
     private FirebaseAuth mAuth;
 
@@ -59,6 +72,8 @@ public class EmailPasswordFirebaseAuth extends AppCompatActivity {
 
 
         //button setups
+
+        //clicking this button changes the page to the create account state
         createAccountPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,9 +81,71 @@ public class EmailPasswordFirebaseAuth extends AppCompatActivity {
             }
         });
 
+        //clicking this button changes the page to the login state
+        loginPageButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                pageStateTextView.setText(R.string.LogIn_Page_State);
+            }
+        });
 
-
+        submitAccountDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String state = pageStateTextView.getText().toString();
+                if (state.equals(getResources().getString(R.string.Creation_Page_State))) {
+                    createNewAccount(emailEntry.getText().toString(), passwordEntry.getText().toString());
+                } else if (state.equals(getResources().getString(R.string.LogIn_Page_State))) {
+                    signIn(emailEntry.getText().toString(), passwordEntry.getText().toString());
+                } else {
+                    CharSequence errorMessage = "An error occurred. Please try again.";
+                    Toast errorPopUp = Toast.makeText(EmailPasswordFirebaseAuth.this, errorMessage, Toast.LENGTH_LONG);
+                    errorPopUp.show();
+                }
+            }
+        });
     }
+
+    private void signIn(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    //sign in success
+                    Log.d(TAG, "signInWithEmail:success");
+
+                    //go back to main activity
+                    startActivity(new Intent(EmailPasswordFirebaseAuth.this, MainActivity.class));
+                } else {
+                    //if sign in fails, display error message
+                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                    Toast.makeText(EmailPasswordFirebaseAuth.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void createNewAccount(String email, String password) {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    //sign in success
+                    Log.d(TAG, "createUserWithEmail:success");  //send the info to logcat, basically
+
+                    //go back to main activity since creating account also signs in
+                    startActivity(new Intent(EmailPasswordFirebaseAuth.this, MainActivity.class));
+
+                } else {
+                    //if sign in fails, display error message
+                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                    Toast.makeText(EmailPasswordFirebaseAuth.this, "Authenticationfailed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
 
     @Override
     public void onStart() {
@@ -80,8 +157,3 @@ public class EmailPasswordFirebaseAuth extends AppCompatActivity {
         }
     }
 }
-
-
-
-/*TODO: create a quick layout to get user sign in info. have separate activities for login, sign up, and logged in. follow video/guide for methods needed. have login screen be first, and have check for if user already signed in in there.
- */

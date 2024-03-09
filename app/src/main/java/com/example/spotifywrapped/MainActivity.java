@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             //user is authorized logic
+            System.out.println(user.toString());
         } else {
             startActivity(new Intent(this, EmailPasswordFirebaseAuth.class));
         }
