@@ -17,6 +17,8 @@ import com.example.spotifywrapped.databinding.FragmentHomeBinding;
 import com.example.spotifywrapped.spotifyAPI.APIHandler;
 import com.example.spotifywrapped.spotifyAPI.RequestParser;
 
+import java.util.Arrays;
+
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
@@ -40,7 +42,7 @@ public class HomeFragment extends Fragment {
         homeButton.setOnClickListener((v) -> {
 
             // get top songs
-            RequestParser.testRequest(getActivity(), (parsedData) -> {
+            RequestParser.songsRequest(getActivity(), (parsedData) -> {
                 // this is what you do with the top songs data
                 onTopSongsReceived(parsedData);
             });
@@ -67,7 +69,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void onTopSongsReceived(String[] parsedData) {
-        loginButton.setText(parsedData[0]);
+        loginButton.setText(Arrays.toString(parsedData));
     }
 
 }

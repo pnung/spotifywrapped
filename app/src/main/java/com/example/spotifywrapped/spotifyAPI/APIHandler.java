@@ -10,6 +10,7 @@ import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -68,7 +69,13 @@ public class APIHandler {
                 try {
                     String responseBodyString = response.body().string();
                     JSONObject JSONresult = new JSONObject(responseBodyString);
-                    callingActivity.runOnUiThread(() -> responsePropagator.propagateResponse(JSONresult));
+                    callingActivity.runOnUiThread(() -> {
+                        try {
+                            responsePropagator.propagateResponse(JSONresult);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 } catch (Exception e) {
                     Log.d("JSON", "Failed to parse data: " + e);
                 }
@@ -146,7 +153,7 @@ public class APIHandler {
     private static AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email" }) // <--- Change the scope of your requested token here
+                .setScopes(new String[] { "user-read-email", "user-top-read" }) // <--- Change the scope of your requested token here
                 .setCampaign("your-campaign-token")
                 .build();
     }
@@ -173,7 +180,7 @@ public class APIHandler {
      * will be run.
      */
     public interface ResponsePropagator<T> {
-        void propagateResponse(T responseResult);
+        void propagateResponse(T responseResult) throws JSONException;
     }
 
 }
