@@ -42,7 +42,7 @@ public class APIHandler {
      * @param callingActivity activity from which request is being made (use getActivity())
      * @param responsePropagator interface that propagates response into calling activity
      */
-    public static void makeRequest(String requestURL, Activity callingActivity, ResponsePropagator<JSONObject> responsePropagator) {
+    public static void makeRequest(String requestURL, Activity callingActivity, ResponsePropagator responsePropagator) {
         if (mAccessToken == null) {
             return;
         }
@@ -171,8 +171,8 @@ public class APIHandler {
      * fulfilled, propagateResponse() will be called and whatever code is specified there
      * will be run.
      */
-    public interface ResponsePropagator<T> {
-        void propagateResponse(T responseResult);
+    public interface ResponsePropagator {
+        void propagateResponse(JSONObject JSONresult);
     }
 
 }
