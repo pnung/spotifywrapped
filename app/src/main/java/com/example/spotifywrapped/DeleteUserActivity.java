@@ -27,11 +27,6 @@ public class DeleteUserActivity extends AppCompatActivity {
     private static final String TAG = "DeleteUserActivityClassTag";
     private ActivityDeleteUserBinding binding;
 
-    private EditText emailEntry;
-    private EditText passwordEntry;
-    private Button submitButton;
-    private Button backButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,15 +38,15 @@ public class DeleteUserActivity extends AppCompatActivity {
         //delete button - calls the delete user function when pressed, using the info in the text fields
         //todo: change to confirm button sequence (ie submit -> are you sure y/n? -> function
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
+        binding.deleteUserLayoutSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteUser(emailEntry.getText().toString(), passwordEntry.getText().toString());
+                deleteUser(binding.deleteUserLayoutEmailAddress.getText().toString(), binding.deleteUserLayoutPassword.getText().toString());
             }
         });
 
         //back button - returns to the main activity when pressed
-        backButton.setOnClickListener(new View.OnClickListener() {
+        binding.deleteUserLayoutBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //return to the main activity when hitting back (aka cancelling the delete)

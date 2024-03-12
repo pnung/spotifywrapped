@@ -1,20 +1,14 @@
 package com.example.spotifywrapped;
 
 import android.content.Intent;
-import android.credentials.Credential;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.spotifywrapped.databinding.ActivityChangeEmailBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -24,13 +18,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ChangeEmailActivity extends AppCompatActivity {
     private static final String TAG = "ChangeEmailActivityClassTag";
-    private ActivityChangeEmailBinding binding;
+    private com.example.spotifywrapped.databinding.ActivityChangeEmailBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityChangeEmailBinding.inflate(getLayoutInflater());
+        binding = com.example.spotifywrapped.databinding.ActivityChangeEmailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
 
@@ -76,8 +70,11 @@ public class ChangeEmailActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "User email successfully changed.");
-                                    startActivity(new Intent(ChangeEmailActivity.this, MainActivity.class));
                                     Toast.makeText(ChangeEmailActivity.this, "Email Changed Successfully.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ChangeEmailActivity.this, "Before you can sign in with it, you must verify your email.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ChangeEmailActivity.this, "Until then, be aware that your old email will work.", Toast.LENGTH_LONG).show();
+                                    FirebaseAuth.getInstance().signOut();
+                                    startActivity(new Intent(ChangeEmailActivity.this, LoginCreateAccountActivity.class));
                                 } else {
                                     Log.w(TAG, "User email change failed.");
                                     Toast.makeText(ChangeEmailActivity.this, "Email Change Failed.", Toast.LENGTH_SHORT).show();

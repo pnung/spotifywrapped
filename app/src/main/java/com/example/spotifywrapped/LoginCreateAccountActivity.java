@@ -19,7 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
+public class LoginCreateAccountActivity extends AppCompatActivity {
 
     //tag for logging information
     private static final String TAG = "EmailPasswordFirebaseAuthActivityClassTag";
@@ -65,7 +65,7 @@ public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (pageStateTextView.getText().toString().equals(getResources().getString(R.string.Creation_Page_State))) {
                     if (binding.emailPassLayoutPassword.getText().length() < 6) {
-                        Toast toast = Toast.makeText(EmailPasswordFirebaseAuthActivity.this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(LoginCreateAccountActivity.this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 }
@@ -101,7 +101,7 @@ public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
                     signIn(emailEntry.getText().toString(), passwordEntry.getText().toString());
                 } else {
                     CharSequence errorMessage = "An error occurred. Please try again.";
-                    Toast errorPopUp = Toast.makeText(EmailPasswordFirebaseAuthActivity.this, errorMessage, Toast.LENGTH_LONG);
+                    Toast errorPopUp = Toast.makeText(LoginCreateAccountActivity.this, errorMessage, Toast.LENGTH_LONG);
                     errorPopUp.show();
                 }
             }
@@ -121,7 +121,7 @@ public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
                 } else {
                     //if sign in fails, display error message
                     Log.w(TAG, "signInWithEmail:failure", task.getException());
-                    Toast.makeText(EmailPasswordFirebaseAuthActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginCreateAccountActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -141,7 +141,7 @@ public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
                 } else {
                     //if sign in fails, display error message
                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                    Toast.makeText(EmailPasswordFirebaseAuthActivity.this, "Authenticationfailed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginCreateAccountActivity.this, "Authenticationfailed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -164,6 +164,6 @@ public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
      * Helper method to return to the main activity
      */
     private void returnToMainActivity() {
-        startActivity(new Intent(EmailPasswordFirebaseAuthActivity.this, MainActivity.class));
+        startActivity(new Intent(LoginCreateAccountActivity.this, MainActivity.class));
     }
 }

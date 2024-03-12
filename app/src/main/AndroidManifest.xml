@@ -22,7 +22,7 @@
             android:name=".DeleteUserActivity"
             android:exported="false" /> <!-- Changed the theme to be a NoActionBar one -->
         <activity
-            android:name=".EmailPasswordFirebaseAuthActivity"
+            android:name=".LoginCreateAccountActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -2,6 +2,7 @@ package com.example.spotifywrapped;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -51,8 +52,38 @@ public class MainActivity extends AppCompatActivity {
 
             //debugging: displays email of signed in user
             binding.textView.setText(user.getEmail());
-        } else {
-            startActivity(new Intent(this, EmailPasswordFirebaseAuthActivity.class));
+
+            //testing purposes: delete/signout/change email/change password
+            binding.MainActivityLayoutDeleteTest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteUser();
+                }
+            });
+
+            binding.MainActivityLayoutSignOut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    signOut();
+                }
+            });
+
+            binding.MainActivityLayoutChangeEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeEmail();
+                }
+            });
+
+            binding.MainActivityLayoutChangePassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changePassword();
+                }
+            });
+
+        } else { //user is not signed in so go to the login/create account page
+            startActivity(new Intent(this, LoginCreateAccountActivity.class));
         }
     }
 
@@ -63,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     public void signOut() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(MainActivity.this, LoginCreateAccountActivity.class));
         }
     }
 
@@ -82,18 +114,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * //TODO Function to change a user's name (not high priority + probably need to ask for name during account creation, which i am not doing yet)
-     */
-    public void changeName() {
-
-    }
+//    /**
+//     * //TODO Function to change a user's name (not high priority + probably need to ask for name during account creation, which i am not doing yet)
+//     */
+//    public void changeName() {
+//
+//    }
 
     /**
      * //TODO Function to change a user's password
      */
     public void changePassword() {
-
+        startActivity(new Intent(MainActivity.this, ChangePasswordActivity.class));
     }
 
 
