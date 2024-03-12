@@ -124,7 +124,8 @@ public class ChatGPT extends AppCompatActivity {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                } else {
+                }
+                else {
                     addResponse("Failed to load the response");
                 }
             }
