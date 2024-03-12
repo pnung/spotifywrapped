@@ -26,11 +26,8 @@ public class LoginCreateAccountActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-    private EditText emailEntry;
-    private EditText passwordEntry;
-    private Button createAccountPageButton;
-    private Button loginPageButton;
-    private Button submitAccountDetailsButton;
+//    private EditText emailEntry;
+//    private EditText passwordEntry;
     private TextView pageStateTextView;
 
     //binding to reference views/things in layout
@@ -45,12 +42,12 @@ public class LoginCreateAccountActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //assign references to views in the xml
-        emailEntry = binding.emailPassLayoutEmailAddress;       //reference to the email entry field
-        passwordEntry = binding.emailPassLayoutPassword;        //reference to the password entry field
+        EditText emailEntry = binding.emailPassLayoutEmailAddress;       //reference to the email entry field
+        EditText passwordEntry = binding.emailPassLayoutPassword;        //reference to the password entry field
 
-        createAccountPageButton = binding.emailPassLayoutCreateAccountPageButton;   //reference to the button that sets the page to create account mode
-        loginPageButton = binding.emailPassLayoutLoginPageButton;                   //reference to the button that sets the page to login to account mode
-        submitAccountDetailsButton = binding.emailPassLayoutSubmitButton;           //reference to the button that submits details for account creation/login
+        Button createAccountPageButton = binding.emailPassLayoutCreateAccountPageButton;   //reference to the button that sets the page to create account mode
+        Button loginPageButton = binding.emailPassLayoutLoginPageButton;                   //reference to the button that sets the page to login to account mode
+        Button submitAccountDetailsButton = binding.emailPassLayoutSubmitButton;           //reference to the button that submits details for account creation/login
 
         pageStateTextView = binding.emailPassLayoutPageState;                       //reference to the textview that indicates the state of the page
 
@@ -91,6 +88,7 @@ public class LoginCreateAccountActivity extends AppCompatActivity {
             }
         });
 
+        //clicking this button submits the text in the text fields to the appropriate function
         submitAccountDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,14 +98,18 @@ public class LoginCreateAccountActivity extends AppCompatActivity {
                 } else if (state.equals(getResources().getString(R.string.LogIn_Page_State))) {
                     signIn(emailEntry.getText().toString(), passwordEntry.getText().toString());
                 } else {
-                    CharSequence errorMessage = "An error occurred. Please try again.";
-                    Toast errorPopUp = Toast.makeText(LoginCreateAccountActivity.this, errorMessage, Toast.LENGTH_LONG);
-                    errorPopUp.show();
+                    //tell the user that an illegal state occurred and to try again.
+                    Toast.makeText(LoginCreateAccountActivity.this, "An error occurred. Please try again.", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
+    /**
+     * Function to sign a user in
+     * @param email the user email
+     * @param password  the user password
+     */
     private void signIn(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -118,15 +120,22 @@ public class LoginCreateAccountActivity extends AppCompatActivity {
 
                     //go back to main activity
                     returnToMainActivity();
-                } else {
-                    //if sign in fails, display error message
+                } else { //task failed
+                    //log the tag, short message, generated exception
                     Log.w(TAG, "signInWithEmail:failure", task.getException());
-                    Toast.makeText(LoginCreateAccountActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+
+                    //tell the user that authentication failed
+                    authFailedToast();
                 }
             }
         });
     }
 
+    /**
+     * Function to create a new account
+     * @param email the email to be used
+     * @param password  the password to be used
+     */
     private void createNewAccount(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -139,14 +148,22 @@ public class LoginCreateAccountActivity extends AppCompatActivity {
                     returnToMainActivity();
 
                 } else {
-                    //if sign in fails, display error message
+                    //log the tag, short message, exception
                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                    Toast.makeText(LoginCreateAccountActivity.this, "Authenticationfailed.", Toast.LENGTH_SHORT).show();
+
+                    //tell the user that account authentication
+                    authFailedToast(); //show a failure toast
                 }
             }
         });
     }
 
+    /**
+     * Function to make a toast that tells the user that authentication failed.
+     */
+    private void authFailedToast() {
+        Toast.makeText(LoginCreateAccountActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+    }
 
 
     @Override
@@ -155,7 +172,7 @@ public class LoginCreateAccountActivity extends AppCompatActivity {
         //check if user is signed in (non-null) and update UI accordingly
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) { //user is signed in
-            //go back to main
+            //go back to main activity
             returnToMainActivity();
         }
     }

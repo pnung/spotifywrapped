@@ -84,11 +84,17 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {  //password changed
-                                Log.d(TAG, "User password successfully changed.");
+                                Log.d(TAG, "User password successfully changed.");  //log tag, short message on success
+
+                                //return to main activity
                                 startActivity(new Intent(ChangePasswordActivity.this, MainActivity.class));
+
+                                //make toast to tell user password changed successfully
                                 Toast.makeText(ChangePasswordActivity.this, "Password Changed Successfully", Toast.LENGTH_SHORT).show();
                             } else {    //password failed to change
-                                Log.w(TAG, "User password change failed.");
+                                Log.w(TAG, "User password change failed.", task.getException());    //log tag, short message, generated exception
+
+                                //tell user password change failed
                                 Toast.makeText(ChangePasswordActivity.this, "Password Change Failed. Please try again.", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -97,6 +103,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
             });
         } else { //user was null. return to main activity, which will force user to sign in activity
             Log.w(TAG, "Attempted to change user password. CurrentUser was null.");
+
+            //return to main activity, which will force the user to the sign in (user was null)
             startActivity(new Intent(ChangePasswordActivity.this, MainActivity.class));
         }
     }
