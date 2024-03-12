@@ -40,16 +40,6 @@ public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        EdgeToEdge.enable(this); //makes the content draw behind the system bars
-//        setContentView(R.layout.activity_email_password_firebase_auth);
-
-        //idk what this code does
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
-
         //assign the binding reference and set the view of the screen
         binding = ActivityEmailPasswordFirebaseAuthBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -73,7 +63,7 @@ public class EmailPasswordFirebaseAuthActivity extends AppCompatActivity {
         binding.emailPassLayoutPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pageStateTextView.equals(getResources().getString(R.string.Creation_Page_State))) {
+                if (pageStateTextView.getText().toString().equals(getResources().getString(R.string.Creation_Page_State))) {
                     if (binding.emailPassLayoutPassword.getText().length() < 6) {
                         Toast toast = Toast.makeText(EmailPasswordFirebaseAuthActivity.this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT);
                         toast.show();

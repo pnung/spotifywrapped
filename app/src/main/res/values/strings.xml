@@ -64,4 +64,11 @@
     <string name="Creation_Page_State">Create A New Account</string>
     <string name="back_button">Back</string>
     <string name="delete_account_text">Delete Account</string>
+    <string name="change_account_email_text">Change Account Email</string>
+    <string name="oldemail_email_com_hint">OldEmail@email.com</string>
+    <string name="newemail_email_com_hint">NewEmail@email.com</string>
+    <string name="delete_account_button">Delete Account</string>
+    <string name="old_password_hint">Old Password</string>
+    <string name="new_password_hint">New Password</string>
+    <string name="change_password_text">Change Password</string>
 </resources>

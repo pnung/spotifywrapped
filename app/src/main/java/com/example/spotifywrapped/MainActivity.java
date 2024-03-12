@@ -75,15 +75,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * //TODO Function to change a user's email
+     * //Function to change a user's email. starts a new activity and asks user to input info to confirm.
      */
     public void changeEmail() {
-
+        startActivity(new Intent(MainActivity.this, ChangeEmailActivity.class));
     }
 
 
     /**
-     * //TODO Function to change a user's name (i think this is a thing)
+     * //TODO Function to change a user's name (not high priority + probably need to ask for name during account creation, which i am not doing yet)
      */
     public void changeName() {
 
