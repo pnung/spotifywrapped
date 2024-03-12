@@ -45,7 +45,6 @@
             android:layout_marginStart="10dp"
             android:padding="8dp"
             android:src="@drawable/plug"
-            android:background="attr/selectableItemBackgroundBorderless"
             />
     </RelativeLayout>
 

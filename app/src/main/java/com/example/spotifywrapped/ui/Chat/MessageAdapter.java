@@ -1,5 +1,6 @@
 package com.example.spotifywrapped.ui.Chat;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -28,7 +29,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-/* HERES WHERE I LEFT OFF LUCKY, 19:07 in VIDEO */
+        Message message = messageList.get(position);
+        if (message.getSentBy().equals(Message.SENT_BY_ME)) {
+            holder.leftChatView.setVisibility(View.GONE);
+            holder.rightChatView.setVisibility(View.VISIBLE);
+            holder.rightTextView.setText(message.getMessage());
+        } else {
+            holder.rightChatView.setVisibility(View.GONE);
+            holder.leftChatView.setVisibility(View.VISIBLE);
+            holder.leftTextView.setText(message.getMessage());
+        }
     }
 
     @Override
