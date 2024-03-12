@@ -87,6 +87,10 @@ public class APIHandler {
         AuthorizationClient.openLoginActivity(callingActivity, AUTH_TOKEN_REQUEST_CODE, request);
     }
 
+    public static boolean isSpotifyAuthenticated() {
+        return mAccessToken != null && !mAccessToken.isEmpty();
+    }
+
     /**
      * Get code from Spotify
      * This method will open the Spotify login activity and get the code
