@@ -51,6 +51,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.firebase:firebase-database:20.0.3'
+
     implementation 'com.spotify.android:auth:2.1.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 

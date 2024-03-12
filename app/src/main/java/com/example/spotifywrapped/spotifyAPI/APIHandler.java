@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -31,6 +33,9 @@ public class APIHandler {
     private static final OkHttpClient mOkHttpClient = new OkHttpClient();
     private static String mAccessToken, mAccessCode;
     private static Call mCall;
+
+//    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+
 
 
 
@@ -89,6 +94,11 @@ public class APIHandler {
 
     public static boolean isSpotifyAuthenticated() {
         return mAccessToken != null && !mAccessToken.isEmpty();
+    }
+
+    public static void fetchSpotifyUserProfile(Activity callingActivity, ResponsePropagator<JSONObject> responsePropagator) {
+        String requestURL = "https://api.spotify.com/v1/me";
+        makeRequest(requestURL, callingActivity, responsePropagator);
     }
 
     /**
