@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
             // Check user has logged in with Spotify before, if not send to Spotify login page
             checkSpotifyAuthentication();
 
+
+
             //debugging: displays email of signed in user
             binding.textView.setText(user.getEmail());
 
@@ -113,26 +115,39 @@ public class MainActivity extends AppCompatActivity {
         if (!APIHandler.isSpotifyAuthenticated()) {
             // No valid Spotify access token exists, so start the Spotify authentication process.
             APIHandler.getToken(this); // Directly initiate Spotify login.
-        } else {
-            // If the user is already authenticated with Spotify, fetch and store the Spotify ID.
-            fetchAndStoreSpotifyID();
         }
     }
 
-    private void storeTestValueInFirebase() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser != null) {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-            DatabaseReference usersRef = databaseReference.child("Users");
+//    private void storeTestValueInFirebase() {
+//        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+//        if (firebaseUser != null) {
+//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//            DatabaseReference usersRef = databaseReference.child("Users");
+//
+//            // Use the Firebase user's UID as the key for the user-specific data
+//            String testValue = "Test Spotify Login Success";
+//            usersRef.child(firebaseUser.getUid()).child("TestValue").setValue(testValue)
+//                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Successfully wrote test value to database"))
+//                    .addOnFailureListener(e -> Log.e(TAG, "Failed to write test value to database", e));
+//        } else {
+//            Log.e(TAG, "FirebaseUser is null. Cannot write test value to database.");
+//        }
+//    }
 
-            // Use the Firebase user's UID as the key for the user-specific data
-            String testValue = "Test Spotify Login Success";
-            usersRef.child(firebaseUser.getUid()).child("TestValue").setValue(testValue)
-                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Successfully wrote test value to database"))
-                    .addOnFailureListener(e -> Log.e(TAG, "Failed to write test value to database", e));
-        } else {
-            Log.e(TAG, "FirebaseUser is null. Cannot write test value to database.");
-        }
+    private void fetchAndStoreSpotifyID() {
+        System.out.println("Fetching and storing");
+        Log.d(TAG, "Fetching and storing Spotify ID"); // Log at start of method
+        APIHandler.fetchSpotifyUserProfile(this, jsonResponse -> {
+            try {
+                Log.d(TAG, "Complete JSON Response: " + jsonResponse.toString());
+                String spotifyID = jsonResponse.getString("id");
+                Log.d(TAG, "Fetched Spotify ID: " + spotifyID); // Log the fetched Spotify ID
+                // Now store this ID in Firebase
+                storeSpotifyIDInFirebase(spotifyID);
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to fetch Spotify ID", e); // Log if there's an issue fetching the ID
+            }
+        });
     }
 
 
@@ -150,31 +165,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    private void fetchAndStoreSpotifyID() {
-        Log.d(TAG, "Fetching and storing Spotify ID"); // Log at start of method
-        storeTestValueInFirebase(); // Call your test method here
-        APIHandler.fetchSpotifyUserProfile(this, jsonResponse -> {
-            try {
-                String spotifyID = jsonResponse.getString("id");
-                Log.d(TAG, "Fetched Spotify ID: " + spotifyID); // Log the fetched Spotify ID
-                // Now store this ID in Firebase
-                storeSpotifyIDInFirebase(spotifyID);
-            } catch (JSONException e) {
-                Log.e(TAG, "Failed to fetch Spotify ID", e); // Log if there's an issue fetching the ID
-            }
-        });
-    }
-
-
     /**
      * When the app leaves this activity to momentarily get a token/code, this function
      * fetches the result of that external activity to get the response from Spotify
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println("onActivityResult()");
         super.onActivityResult(requestCode, resultCode, data);
         APIHandler.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == APIHandler.AUTH_TOKEN_REQUEST_CODE) {
+            if (APIHandler.isSpotifyAuthenticated()) {
+                fetchAndStoreSpotifyID();
+            } else {
+                System.out.println("NOT AUTHENTICATED");
+            }
+        }
     }
 
 

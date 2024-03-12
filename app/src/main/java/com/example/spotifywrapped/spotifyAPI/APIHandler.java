@@ -49,6 +49,7 @@ public class APIHandler {
      */
     public static void makeRequest(String requestURL, Activity callingActivity, ResponsePropagator<JSONObject> responsePropagator) {
         if (mAccessToken == null) {
+            System.out.println("NO ACCESS TOKEN, REQUEST FAILED");
             return;
         }
 
@@ -97,6 +98,7 @@ public class APIHandler {
     }
 
     public static void fetchSpotifyUserProfile(Activity callingActivity, ResponsePropagator<JSONObject> responsePropagator) {
+        System.out.println("fetching spotify");
         String requestURL = "https://api.spotify.com/v1/me";
         makeRequest(requestURL, callingActivity, responsePropagator);
     }
