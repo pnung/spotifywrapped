@@ -70,7 +70,7 @@ public class DeleteUserActivity extends AppCompatActivity {
             user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {  //reauthenticate takes the gathered email/password and compares them against the users to reauth user
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {    //delete the user account
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {  //successful reauth. delete user
@@ -78,7 +78,7 @@ public class DeleteUserActivity extends AppCompatActivity {
                                 startActivity(new Intent(DeleteUserActivity.this, MainActivity.class));     //return to main activity
                                 Toast.makeText(DeleteUserActivity.this, "Deleted User.", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
                             } else {    //task not successfully completed
-                                Log.w(TAG, "User account was not deleted.");
+                                Log.w(TAG, "User account was not deleted.", task.getException()); //log the tag, short message, generated exception
                                 Toast.makeText(DeleteUserActivity.this, "User Not Deleted. Please Try Again.", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
                             }
                         }
@@ -87,7 +87,9 @@ public class DeleteUserActivity extends AppCompatActivity {
             });
         } else { //user is null
             Log.w(TAG, "Attempted to delete user. CurrentUser was null");
-            startActivity(new Intent(DeleteUserActivity.this, MainActivity.class));     //return to main activity
+
+            //return to main activity
+            startActivity(new Intent(DeleteUserActivity.this, MainActivity.class));
         }
     }
 }

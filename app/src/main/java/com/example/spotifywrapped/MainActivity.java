@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
+        //defaulted as part of the project template. i think we should get rid of it
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -42,18 +43,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //TODO decide if we want to force users to the sign in screen before doing anything or if we want to default to not that but have logic that still forces a sign in before doing anything
+        //TODO decide if we want to force users to the sign in screen before doing anything or if we
+        // want to default to not that but have logic that still forces a sign in before doing anything
         //rn the code below forces the user to the login screen if not signed in
 
         //check if user is authorized
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            //user is authorized logic
+        if (user != null) { //user is authorized
 
-            //debugging: displays email of signed in user
+            //displays email of signed in user. used for debugging and TODO deleted later
             binding.textView.setText(user.getEmail());
 
-            //testing purposes: delete/signout/change email/change password
+            //testing purposes: delete/signout/change email/change password. following section
+            //assigns these functionalities to buttons in the main activity
             binding.MainActivityLayoutDeleteTest.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -99,7 +101,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Function to delete a user. starts a new activity and asks user to input info to confirm. //TODO actually test if delete works properly lol
+     * Function to delete a user. starts a new activity and asks
+     * user to input info to confirm.
      */
     public void deleteUser() {
         startActivity(new Intent(MainActivity.this, DeleteUserActivity.class));
@@ -107,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * //Function to change a user's email. starts a new activity and asks user to input info to confirm.
+     * Function to change a user's email. starts a new activity
+     * and asks user to input info to confirm.
      */
     public void changeEmail() {
         startActivity(new Intent(MainActivity.this, ChangeEmailActivity.class));
@@ -115,14 +119,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 //    /**
-//     * //TODO Function to change a user's name (not high priority + probably need to ask for name during account creation, which i am not doing yet)
+//     * TODO Function to change a user's name (not high priority + probably need to ask for name during account creation, which i am not doing yet)
 //     */
 //    public void changeName() {
 //
 //    }
 
     /**
-     * //TODO Function to change a user's password
+     * Function to change a user's password. starts a new activity
+     * and asks user to input relevant info
      */
     public void changePassword() {
         startActivity(new Intent(MainActivity.this, ChangePasswordActivity.class));
