@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
         homeButton.setOnClickListener((v) -> {
 
             // get top songs
-            RequestParser.songsRequest(getActivity(), (parsedData) -> {
+            RequestParser.lastPlayedSongs(getActivity(), (parsedData) -> {
                 // this is what you do with the top songs data
                 onTopSongsReceived(parsedData);
             });
