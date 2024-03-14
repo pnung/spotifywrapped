@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.spotifywrapped.databinding.FragmentHomeBinding;
+import com.example.spotifywrapped.spotifyAPI.APIHandler;
 
 public class HomeFragment extends Fragment {
 

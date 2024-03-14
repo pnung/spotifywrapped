@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
@@ -44,6 +45,8 @@ public class APIHandler {
      */
     public static void makeRequest(String requestURL, Activity callingActivity, ResponsePropagator<JSONObject> responsePropagator) {
         if (mAccessToken == null) {
+            callingActivity.runOnUiThread( () -> Toast.makeText(callingActivity, "Request failed, no access token", Toast.LENGTH_SHORT).show()
+            );
             return;
         }
 
@@ -59,6 +62,8 @@ public class APIHandler {
         mCall.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                callingActivity.runOnUiThread( () -> Toast.makeText(callingActivity, "HTTP request failed", Toast.LENGTH_SHORT).show()
+                );
                 Log.d("HTTP", "Failed to fetch data: " + e);
             }
 
