@@ -11,6 +11,7 @@ import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -150,7 +151,7 @@ public class APIHandler {
     private static AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email" }) // <--- Change the scope of your requested token here
+                .setScopes(new String[] { "user-read-email", "user-top-read", "user-read-recently-played" }) // <--- Change the scope of your requested token here
                 .setCampaign("your-campaign-token")
                 .build();
     }
