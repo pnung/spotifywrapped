@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        chatapicode();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -48,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         APIHandler.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void chatapicode() {
+        startActivity(new Intent(MainActivity.this, GPTActivity.class));
     }
 
 }
