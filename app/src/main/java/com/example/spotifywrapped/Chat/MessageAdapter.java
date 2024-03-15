@@ -1,4 +1,4 @@
-package com.example.spotifywrapped.ui.Chat;
+package com.example.spotifywrapped.Chat;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +14,11 @@ import com.example.spotifywrapped.R;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder>{
+
     List<Message> messageList;
     public MessageAdapter(List<Message> messageList) {
         this.messageList = messageList;
     }
-
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
         return messageList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder{
         LinearLayout leftChatView, rightChatView;
         TextView leftTextView, rightTextView;
         public MyViewHolder(@NonNull View itemView) {
@@ -57,5 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
             rightTextView = itemView.findViewById(R.id.rightChatTextView);
 
         }
+
     }
+
 }

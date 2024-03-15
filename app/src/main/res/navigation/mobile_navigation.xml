@@ -22,4 +22,11 @@
         android:name="com.example.spotifywrapped.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <activity
+        android:id="@+id/navigation_chatGPT"
+        android:name="com.example.spotifywrapped.Chat.ChatGPTActivity"
+        android:label="@string/title_chat_gpt"
+        tools:layout="@layout/activity_chatgpt" />
+
 </navigation>
