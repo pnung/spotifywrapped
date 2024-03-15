@@ -91,7 +91,7 @@ public class ChatGPTActivity extends AppCompatActivity {
             welcomeText.setVisibility(View.GONE);
         });
 
-        /* HELP HERE
+        /* HELP HERE PlEASE!
         BottomNavigationView navView = findViewById(R.id.navigation_chatGPT);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
