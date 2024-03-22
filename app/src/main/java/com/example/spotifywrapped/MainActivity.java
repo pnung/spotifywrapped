@@ -105,6 +105,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Pass in JSON key that you would like to store
+    private void fetchAndStoreData(String data) {
+        Log.d(TAG, "Fetching and storing data");
+        APIHandler.fetchSpotifyUserProfile(this, jsonResponse -> {
+            try {
+                String spotifyID = jsonResponse.getString(data);
+                Log.d(TAG, "Fetched data: " + data);
+                storeSpotifyIDInFirebase(data);
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to fetch data", e);
+            }
+        });
+    }
+
+    private void storeDataInFireBase(String data) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            Log.d(TAG, "Storing data: " + data + " for user: " + firebaseUser.getUid());
+            DatabaseReference usersRef = myRef.child("Users");
+            usersRef.child(firebaseUser.getUid()).child(data).setValue(data)
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Successfully stored data"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to store data", e));
+        } else {
+            Log.e(TAG, "FirebaseUser is null. Cannot store data.");
+        }
+    }
+
     private void storeSpotifyIDInFirebase(String spotifyID) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
