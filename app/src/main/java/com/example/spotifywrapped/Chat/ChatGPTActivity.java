@@ -1,4 +1,4 @@
-package com.example.spotifywrapped.ui.Chat;
+package com.example.spotifywrapped.Chat;
 
 import android.os.Bundle;
 
@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+//import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -15,7 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.spotifywrapped.R;
-import com.example.spotifywrapped.databinding.FragmentChatGPTBinding;
+import com.example.spotifywrapped.Chat.Message;
+import com.example.spotifywrapped.Chat.MessageAdapter;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,9 +41,19 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ChatGPT extends AppCompatActivity {
-   /*MY BINDING IS MESSING UP AND INFLATE IS FUCKED UP HELP */
-   private FragmentChatGPTBinding binding;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.spotifywrapped.databinding.ActivityChatgptBinding;
+import com.example.spotifywrapped.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+public class ChatGPTActivity extends AppCompatActivity {
+    private ActivityChatgptBinding binding;
     RecyclerView recyclerView;
     TextView welcomeText;
     EditText messageEditText;
@@ -46,13 +64,12 @@ public class ChatGPT extends AppCompatActivity {
     OkHttpClient client = new OkHttpClient();
 
     protected void onCreate(Bundle savedInstanceState) {
-        binding = FragmentChatGPTBinding.inflate(getLayoutInflater());
+        binding = ActivityChatgptBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
 
         super.onCreate(savedInstanceState);
-
-        binding = ChatGPT.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        setContentView(R.layout.fragment_chat_g_p_t);
+        setContentView(R.layout.activity_chatgpt);
         messageList = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
         welcomeText = findViewById(R.id.welcome_text);
@@ -67,11 +84,24 @@ public class ChatGPT extends AppCompatActivity {
 
         sendButton.setOnClickListener((v)->{
             String question = messageEditText.getText().toString().trim();
+            Toast.makeText(this,question,Toast.LENGTH_LONG).show();
             addToChat(question, Message.SENT_BY_ME);
             messageEditText.setText("");
             callAPI(question);
             welcomeText.setVisibility(View.GONE);
         });
+
+        /* HELP HERE PlEASE!
+        BottomNavigationView navView = findViewById(R.id.navigation_chatGPT);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+        */
 
     }
 
@@ -133,8 +163,5 @@ public class ChatGPT extends AppCompatActivity {
 
     }
 
-    private static FragmentChatGPTBinding inflate(LayoutInflater layoutInflater) {
-        return null;
-    }
 
 }
