@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class DeleteUserActivity extends AppCompatActivity {
@@ -70,19 +72,45 @@ public class DeleteUserActivity extends AppCompatActivity {
             user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {  //reauthenticate takes the gathered email/password and compares them against the users to reauth user
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {    //delete the user account
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {  //successful reauth. delete user
-                                Log.d(TAG, "User account deleted.");    //update log
-                                startActivity(new Intent(DeleteUserActivity.this, MainActivity.class));     //return to main activity
-                                Toast.makeText(DeleteUserActivity.this, "Deleted User.", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
-                            } else {    //task not successfully completed
-                                Log.w(TAG, "User account was not deleted.", task.getException()); //log the tag, short message, generated exception
-                                Toast.makeText(DeleteUserActivity.this, "User Not Deleted. Please Try Again.", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
+                    //if the user is successfully reauth'ed, delete them.
+                    if (task.isSuccessful()) {
+                        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {    //delete the user account
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {  //successful reauth. delete user
+                                    Log.d(TAG, "User account deleted.");    //update log
+                                    startActivity(new Intent(DeleteUserActivity.this, MainActivity.class));     //return to main activity
+                                    Toast.makeText(DeleteUserActivity.this, "Deleted User.", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
+                                } else {    //task not successfully completed
+                                    Log.w(TAG, "User account was not deleted.", task.getException()); //log the tag, short message, generated exception
+                                    Toast.makeText(DeleteUserActivity.this, "User Not Deleted. Please Try Again.", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
+                                }
                             }
+                        });
+                    } else { //failed to reauth user
+                        Exception error = task.getException();  //put the exception into a variable
+
+                        //determine what the error is and respond accordingly
+                        if (error == null) {
+                            Log.w(TAG, "task.getException() was null");   //log class tag, a short message, and what the exception was
+                            Toast.makeText(DeleteUserActivity.this, "Delete user Failed.", Toast.LENGTH_SHORT).show();
+
+                        } else if (error instanceof FirebaseAuthInvalidCredentialsException) { //something about the credential is wrong
+                            Log.w(TAG, ((FirebaseAuthInvalidCredentialsException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
+                            Toast.makeText(DeleteUserActivity.this, "Failed to verify user.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteUserActivity.this, "Are you sure your login information is correct?", Toast.LENGTH_SHORT).show();
+
+                        } else if (error instanceof FirebaseAuthInvalidUserException) { //user account is disabled, deleted, or credentials changed on another device
+                            Log.w(TAG, ((FirebaseAuthInvalidUserException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
+                            Toast.makeText(DeleteUserActivity.this, "Failed to verify user.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteUserActivity.this, "Are you sure your login information is correct?", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.w(TAG, error);   //log class tag, the error code, and what the exception was
+                            Toast.makeText(DeleteUserActivity.this, "Delete user Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteUserActivity.this, "Please try again.", Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    }
+
                 }
             });
         } else { //user is null
