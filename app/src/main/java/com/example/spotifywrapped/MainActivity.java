@@ -3,7 +3,10 @@ package com.example.spotifywrapped;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,19 +48,57 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setupBottomNavigationView();
+//        setupBottomNavigationView();
         handleUserAuthentication();
+
+        Button settingsButton = findViewById(R.id.settingsButton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSettingsMenu(view);
+            }
+        });
     }
 
-    private void setupBottomNavigationView() {
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+//    private void setupBottomNavigationView() {
+//        BottomNavigationView navView = findViewById(R.id.nav_view);
+//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+//                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+//                .build();
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(navView, navController);
+//    }
+
+    private void showSettingsMenu(View view) {
+        PopupMenu settingsMenu = new PopupMenu(MainActivity.this, view);
+        settingsMenu.getMenuInflater().inflate(R.menu.settings_menu, settingsMenu.getMenu());
+
+        settingsMenu.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.changeEmail) {
+                changeEmail();
+                return true;
+            } else if (id == R.id.changePassword) {
+                changePassword();
+                return true;
+            } else if (id == R.id.deleteAccount) {
+                deleteUser();
+                return true;
+            } else if (id == R.id.signOut) {
+                signOut();
+                return true;
+            }
+            return false;
+        });
+
+
+        settingsMenu.show();
     }
+
+
+
+
 
     private void handleUserAuthentication() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -75,10 +116,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupButtonListeners() {
-        binding.MainActivityLayoutDeleteTest.setOnClickListener(v -> deleteUser());
-        binding.MainActivityLayoutSignOut.setOnClickListener(v -> signOut());
-        binding.MainActivityLayoutChangeEmail.setOnClickListener(v -> changeEmail());
-        binding.MainActivityLayoutChangePassword.setOnClickListener(v -> changePassword());
+//        binding.MainActivityLayoutDeleteTest.setOnClickListener(v -> deleteUser());
+//        binding.MainActivityLayoutSignOut.setOnClickListener(v -> signOut());
+//        binding.MainActivityLayoutChangeEmail.setOnClickListener(v -> changeEmail());
+//        binding.MainActivityLayoutChangePassword.setOnClickListener(v -> changePassword());
         binding.btnCreateWrapped.setOnClickListener(v -> createNewWrapped());
     }
 
