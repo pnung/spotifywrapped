@@ -56,6 +56,10 @@ dependencies {
     implementation 'com.spotify.android:auth:2.1.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
+    // Artist images
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
     // Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:32.7.3')
 

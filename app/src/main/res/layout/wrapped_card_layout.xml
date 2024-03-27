@@ -1,18 +1,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/textViewTopArtist"
+        android:id="@+id/textViewTopArtistsLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Top Artist"
+        android:text="Top Artists"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
+    <!-- RecyclerView for displaying top artists horizontally -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTopArtists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
     <TextView
-        android:id="@+id/textViewTopSong"
+        android:id="@+id/textViewTopSongs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Top Song"

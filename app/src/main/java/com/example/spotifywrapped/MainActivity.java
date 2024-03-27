@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -12,13 +14,16 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.example.spotifywrapped.spotifyAPI.APIHandler;
 import com.example.spotifywrapped.spotifyAPI.RequestParser;
-import com.example.spotifywrapped.spotifyAPI.data.WrappedInfo;
+import com.example.spotifywrapped.spotifyAPI.data.Wrap;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,30 +95,57 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        RequestParser.songsRequest(this, topSongsArray -> {
-            List<String> topSongsList = Arrays.asList(topSongsArray);
-            RequestParser.topArtistsRequest(this, topArtistsJSON -> {
-                List<String> topArtists = new ArrayList<>();
-                for (int i = 0; i < topArtistsJSON.length(); i++) {
-                    topArtists.add(topArtistsJSON.optString(i)); // Adjust parsing as necessary
-                }
-                RequestParser.fetchTopGenresBasedOnTopArtists(this, topGenres -> {
-                    WrappedInfo wrappedInfo = new WrappedInfo(topSongsList, topArtists, topGenres);
-                    storeWrappedInfoInFirebase(wrappedInfo);
+        RequestParser.songsRequest(this, topSongsList -> {
+            RequestParser.topArtistsRequest(this, topArtistsList -> {
+                RequestParser.fetchTopGenresBasedOnTopArtists(this, topGenresList -> {
+                    Wrap newWrap = new Wrap(topSongsList, topArtistsList, topGenresList); // Adjust as per the constructor
+                    storeWrappedInfoInFirebase(newWrap);
                 });
             });
         });
     }
 
-    private void storeWrappedInfoInFirebase(WrappedInfo wrappedInfo) {
+
+    private void storeWrappedInfoInFirebase(Wrap wrap) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
-            DatabaseReference wrappedRef = myRef.child("Users").child(firebaseUser.getUid()).child("WrappedInfo");
-            wrappedRef.setValue(wrappedInfo)
-                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Successfully stored Wrapped info"))
-                    .addOnFailureListener(e -> Log.e(TAG, "Failed to store Wrapped info", e));
+            DatabaseReference wrapsRef = myRef.child("Users").child(firebaseUser.getUid()).child("Wraps");
+            String wrapId = wrapsRef.push().getKey(); // Generate a unique ID for the wrap
+            wrap.setId(wrapId); // Now set the id
+            wrapsRef.child(wrapId).setValue(wrap)
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Successfully stored wrap with ID: " + wrapId))
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to store wrap", e));
         }
     }
+
+    private void fetchWrapsFromFirebase() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users")
+                    .child(user.getUid()).child("Wraps");
+
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    List<Wrap> wraps = new ArrayList<>();
+                    for (DataSnapshot wrapSnapshot : dataSnapshot.getChildren()) {
+                        wraps.add(wrapSnapshot.getValue(Wrap.class));
+                    }
+                    updateUIWithWraps(wraps);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle error
+                }
+            });
+        }
+    }
+
+    private void updateUIWithWraps(List<Wrap> wraps) {
+        // Update your RecyclerView adapter with the list of wraps
+    }
+
 
     private void signOut() {
         FirebaseAuth.getInstance().signOut();

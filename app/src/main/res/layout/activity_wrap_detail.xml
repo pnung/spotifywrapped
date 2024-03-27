@@ -1,0 +1,71 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvWrapTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wrapped Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:gravity="center_horizontal"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/tvTopSongsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Top Songs:"
+            android:paddingTop="16dp" />
+
+        <!-- Container for top songs -->
+        <LinearLayout
+            android:id="@+id/llTopSongs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/tvTopArtistsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Top Artists:"
+            android:paddingTop="16dp" />
+
+        <!-- Artist Image View -->
+        <ImageView
+            android:id="@+id/artistImageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/placeholder_image" />
+
+        <!-- Artist Name TextView -->
+        <TextView
+            android:id="@+id/artistNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvTopGenresLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Top Genres:"
+            android:paddingTop="16dp" />
+
+        <!-- Container for top genres -->
+        <LinearLayout
+            android:id="@+id/llTopGenres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </LinearLayout>
+</ScrollView>
