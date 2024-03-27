@@ -67,7 +67,6 @@ public class ChatGPTActivity extends AppCompatActivity {
         binding = ActivityChatgptBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatgpt);
         messageList = new ArrayList<>();

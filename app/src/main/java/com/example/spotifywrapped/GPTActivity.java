@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spotifywrapped.databinding.ActivityGptactivityBinding;
-import com.example.spotifywrapped.databinding.FragmentChatGPTBinding;
-import com.example.spotifywrapped.ui.Chat.ChatGPT;
-import com.example.spotifywrapped.ui.Chat.Message;
-import com.example.spotifywrapped.ui.Chat.MessageAdapter;
+//import com.example.spotifywrapped.databinding.FragmentChatGPTBinding;
+import com.example.spotifywrapped.Chat.ChatGPTActivity;
+import com.example.spotifywrapped.Chat.Message;
+import com.example.spotifywrapped.Chat.MessageAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,7 +56,8 @@ public class GPTActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityGptactivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setContentView(R.layout.fragment_chat_g_p_t);
+        setContentView(R.layout.activity_chatgpt);
+
         messageList = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
         welcomeText = findViewById(R.id.welcome_text);
