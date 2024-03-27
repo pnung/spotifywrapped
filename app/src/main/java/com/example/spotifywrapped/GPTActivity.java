@@ -98,24 +98,41 @@ public class GPTActivity extends AppCompatActivity {
         JSONObject jsonB = new JSONObject();
         try {
             Log.d(TAG, "JSON B PUT");
+
             jsonB.put("model","gpt-3.5-turbo");
-            jsonB.put("prompt", q);
-            jsonB.put("max_tokens", 4000);
-            jsonB.put("temperature", 0);
+
+            JSONObject systemSettings = new JSONObject();
+            systemSettings.put("role", "system")
+                    .put("content", "You are a helpful assistant");
+
+            JSONObject userSettings = new JSONObject();
+            userSettings.put("role", "user")
+                    .put("content", q);
+
+            JSONArray array = new JSONArray();
+            array.put(systemSettings)
+                    .put(userSettings);
+
+            jsonB.put("messages", array);
+            jsonB.put("max_tokens", 100);
+            jsonB.put("temperature", 1);
+            System.out.println(jsonB); // working
         } catch (JSONException e) {
-            Log.w(TAG, "JSON B PUT", e);
+            Log.w(TAG, "JSON B PUT ERROR", e);
             throw new RuntimeException(e);
         }
         RequestBody body = RequestBody.create(jsonB.toString(), JSON);
         Request request = new Request.Builder()
-                .url("https://api.openai.com/v1/completions")
-                .header("Authorization", "Bearer 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")
+                .url("https://api.openai.com/v1/chat/completions")
+                .header("Authorization", "Bearer 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") //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
                 .post(body)
                 .build();
         Log.d(TAG, "REQUEST BODY");
+        Log.d(TAG, request.toString());
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, "failed to load response 1");
                 addResponse("Failed to load the response");
             }
 
@@ -126,13 +143,16 @@ public class GPTActivity extends AppCompatActivity {
                     try {
                         jsonObject = new JSONObject(response.body().string());
                         JSONArray jsonArray = jsonObject.getJSONArray("choices");
-                        String result = jsonArray.getJSONObject(0).getString("text");
+                        String result = jsonArray.getJSONObject(0).getJSONObject("message").getString("content");
                         addResponse(result.trim());
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
                 }
                 else {
+                    Log.d(TAG, "failed to load response 2");
+                    System.out.println(response);
+                    System.out.println(response.isSuccessful());
                     addResponse("Failed to load the response");
                 }
             }

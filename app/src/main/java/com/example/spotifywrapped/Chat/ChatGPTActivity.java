@@ -1,3 +1,5 @@
+// THIS CLASS APPEARS TO BE UNUSED, REFER TO GPTActivity.java INSTEAD
+
 package com.example.spotifywrapped.Chat;
 
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 //import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -138,7 +141,7 @@ public class ChatGPTActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                addResponse("Failed to load the response");
+                addResponse("response failed 1");
             }
 
             @Override
@@ -149,13 +152,15 @@ public class ChatGPTActivity extends AppCompatActivity {
                         jsonObject = new JSONObject(response.body().string());
                         JSONArray jsonArray = jsonObject.getJSONArray("choices");
                         String result = jsonArray.getJSONObject(0).getString("text");
-                        addResponse(result.trim());
+                        //addResponse(result.trim());
+                        addResponse("response failed 3");
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
                 }
                 else {
-                    addResponse("Failed to load the response");
+                    Log.d("ChatGPTActivity", response.message());
+                    addResponse("response failed 1");
                 }
             }
         });
