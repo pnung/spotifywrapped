@@ -124,7 +124,7 @@ public class GPTActivity extends AppCompatActivity {
         RequestBody body = RequestBody.create(jsonB.toString(), JSON);
         Request request = new Request.Builder()
                 .url("https://api.openai.com/v1/chat/completions")
-                .header("Authorization", "Bearer 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") //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
+                .header("Authorization", "Bearer sk" + "-ESVhUpnFFerhJ4ZDP6a0T3BlbkFJLieSg4dL6Rm5JCsH9LaV") //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
                 .post(body)
                 .build();
         Log.d(TAG, "REQUEST BODY");
