@@ -28,7 +28,7 @@
         android:id="@+id/editPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="552dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/input_field"
         android:ems="10"
         android:fontFamily="@font/poppins"
@@ -37,11 +37,9 @@
         android:textColor="#FF9800"
         android:textColorHint="#FF9518"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/signIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress"
-        app:layout_constraintVertical_bias="0.436" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
 
     <Button
         android:id="@+id/signIn"
@@ -69,6 +67,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="pa"
-        tools:layout_editor_absoluteY="651dp" />
+        tools:layout_editor_absoluteY="640dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
