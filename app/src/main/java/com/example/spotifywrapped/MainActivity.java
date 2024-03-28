@@ -118,13 +118,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//    /**
-//     * TODO Function to change a user's name (not high priority + probably need to ask for name during account creation, which i am not doing yet)
-//     */
-//    public void changeName() {
-//
-//    }
-
     /**
      * Function to change a user's password. starts a new activity
      * and asks user to input relevant info

@@ -90,15 +90,13 @@ public class ChangeEmailActivity extends AppCompatActivity {
                                     Toast.makeText(ChangeEmailActivity.this, "Email Changed Successfully.", Toast.LENGTH_SHORT).show();
                                     Toast.makeText(ChangeEmailActivity.this, "Before you can sign in with it, you must verify your email.", Toast.LENGTH_LONG).show();
                                     Toast.makeText(ChangeEmailActivity.this, "Until then, be aware that your old email will still work.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ChangeEmailActivity.this, "Signing out of the app...", Toast.LENGTH_LONG).show();
 
                                     //force the user to sign out
-                                    FirebaseAuth.getInstance().signOut();
-
-                                    //go to the login activity
-                                    startActivity(new Intent(ChangeEmailActivity.this, LoginCreateAccountActivity.class));
+                                    sign_out_helper();
                                 } else {    //something about the process failed.
-                                    Log.w(TAG, task.getException());   //log class tag, the error code, and what the exception was
-                                    Toast.makeText(ChangeEmailActivity.this, "Email Change Failed.", Toast.LENGTH_SHORT).show();
+                                    Log.w(TAG, task.getException());   //log class tag and what the exception was
+                                    Toast.makeText(ChangeEmailActivity.this, "An error occurred.", Toast.LENGTH_SHORT).show();
                                     Toast.makeText(ChangeEmailActivity.this, "Please try again.", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -109,20 +107,22 @@ public class ChangeEmailActivity extends AppCompatActivity {
                         //determine what the error is and respond accordingly
                         if (error == null) {
                             Log.w(TAG, "task.getException() was null");   //log class tag, a short message, and what the exception was
-                            Toast.makeText(ChangeEmailActivity.this, "Email Change Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChangeEmailActivity.this, "Email Change Failed. Please try again.", Toast.LENGTH_SHORT).show();
 
                         } else if (error instanceof FirebaseAuthInvalidCredentialsException) { //something about the credential is wrong
                             Log.w(TAG, ((FirebaseAuthInvalidCredentialsException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
-                            Toast.makeText(ChangeEmailActivity.this, "Failed to verify user.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChangeEmailActivity.this, "Failed to verify your account information.", Toast.LENGTH_SHORT).show();
                             Toast.makeText(ChangeEmailActivity.this, "Are you sure your login information is correct?", Toast.LENGTH_SHORT).show();
 
                         } else if (error instanceof FirebaseAuthInvalidUserException) { //user account is disabled, deleted, or credentials changed on another device
                             Log.w(TAG, ((FirebaseAuthInvalidUserException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
-                            Toast.makeText(ChangeEmailActivity.this, "Failed to verify user.", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(ChangeEmailActivity.this, "Are you sure your login information is correct?", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChangeEmailActivity.this, "Your account status appears to have changed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChangeEmailActivity.this, "Please log in again.", Toast.LENGTH_SHORT).show();
+                            //sign the user out and take them to sign in page
+                            sign_out_helper();
                         } else {
-                            Log.w(TAG, error);   //log class tag, the error code, and what the exception was
-                            Toast.makeText(ChangeEmailActivity.this, "Email Change Failed.", Toast.LENGTH_SHORT).show();
+                            Log.w(TAG, error.getMessage(), error);   //log class tag, the error message, and what the exception was
+                            Toast.makeText(ChangeEmailActivity.this, "An error occurred.", Toast.LENGTH_SHORT).show();
                             Toast.makeText(ChangeEmailActivity.this, "Please try again.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -130,8 +130,24 @@ public class ChangeEmailActivity extends AppCompatActivity {
             });
         } else {    //user was null. return to main activity, which at time of writing will force user to sign in activity
             Log.w(TAG, "Attempted to change user email. CurrentUser was null"); //log class tag, short message
-            startActivity(new Intent(ChangeEmailActivity.this, MainActivity.class)); //return to main activity
+            Toast.makeText(ChangeEmailActivity.this, "Your account appears to be signed out.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChangeEmailActivity.this, "Please sign in again.", Toast.LENGTH_SHORT).show();
+
+            //sign out and go to login
+            sign_out_helper();
         }
 
     }
+
+    /**
+     * Signs the user out and takes them to the sign in page
+     */
+    private void sign_out_helper() {
+        //force the user to sign out
+        FirebaseAuth.getInstance().signOut();
+
+        //go to the login activity
+        startActivity(new Intent(ChangeEmailActivity.this, LoginCreateAccountActivity.class));
+    }
 }
+

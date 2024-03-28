@@ -23,6 +23,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class DeleteUserActivity extends AppCompatActivity {
@@ -78,12 +79,40 @@ public class DeleteUserActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {  //successful reauth. delete user
-                                    Log.d(TAG, "User account deleted.");    //update log
-                                    startActivity(new Intent(DeleteUserActivity.this, MainActivity.class));     //return to main activity
-                                    Toast.makeText(DeleteUserActivity.this, "Deleted User.", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
+                                    Log.d(TAG, "Deleted user account.");    //update log
+
+                                    //Force user to sign out and go to the login activity
+                                    sign_out_helper();
+
+                                    Toast.makeText(DeleteUserActivity.this, "Deleted account!", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
                                 } else {    //task not successfully completed
                                     Log.w(TAG, "User account was not deleted.", task.getException()); //log the tag, short message, generated exception
                                     Toast.makeText(DeleteUserActivity.this, "User Not Deleted. Please Try Again.", Toast.LENGTH_SHORT).show();    //toast to tell user that user was deleted
+
+
+                                    Exception error = task.getException(); //get the exception
+
+                                    if (error == null) {
+                                        Log.w(TAG, "task.getException() was null");   //log class tag, a short message, and what the exception was
+                                        Toast.makeText(DeleteUserActivity.this, "Failed to delete account. Please try again", Toast.LENGTH_SHORT).show();
+                                    } else if (error instanceof FirebaseAuthInvalidUserException) { //user account is disabled, deleted, or credentials changed on another device
+                                        Log.w(TAG, ((FirebaseAuthInvalidUserException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
+                                        Toast.makeText(DeleteUserActivity.this, "Your account status appears to have changed.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(DeleteUserActivity.this, "Please log in again", Toast.LENGTH_SHORT).show();
+
+                                        //force user sign out and start login activity
+                                        sign_out_helper();
+                                    } else if (error instanceof FirebaseAuthRecentLoginRequiredException) {
+                                        Log.w(TAG, ((FirebaseAuthRecentLoginRequiredException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
+                                        Toast.makeText(DeleteUserActivity.this, "Your account has not logged in recently.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(DeleteUserActivity.this, "Please log in again", Toast.LENGTH_SHORT).show();
+
+                                        //force user sign out and start login activity
+                                        sign_out_helper();
+                                    } else {
+                                        Toast.makeText(DeleteUserActivity.this, "An error occurred.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(DeleteUserActivity.this, "Please try again.", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                         });
@@ -93,20 +122,23 @@ public class DeleteUserActivity extends AppCompatActivity {
                         //determine what the error is and respond accordingly
                         if (error == null) {
                             Log.w(TAG, "task.getException() was null");   //log class tag, a short message, and what the exception was
-                            Toast.makeText(DeleteUserActivity.this, "Delete user Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteUserActivity.this, "Failed to delete account. Please try again.", Toast.LENGTH_SHORT).show();
 
                         } else if (error instanceof FirebaseAuthInvalidCredentialsException) { //something about the credential is wrong
                             Log.w(TAG, ((FirebaseAuthInvalidCredentialsException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
-                            Toast.makeText(DeleteUserActivity.this, "Failed to verify user.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteUserActivity.this, "Failed to verify your account information.", Toast.LENGTH_SHORT).show();
                             Toast.makeText(DeleteUserActivity.this, "Are you sure your login information is correct?", Toast.LENGTH_SHORT).show();
 
                         } else if (error instanceof FirebaseAuthInvalidUserException) { //user account is disabled, deleted, or credentials changed on another device
                             Log.w(TAG, ((FirebaseAuthInvalidUserException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
-                            Toast.makeText(DeleteUserActivity.this, "Failed to verify user.", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(DeleteUserActivity.this, "Are you sure your login information is correct?", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteUserActivity.this, "Your account status appears to have changed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteUserActivity.this, "Please log in again", Toast.LENGTH_SHORT).show();
+
+                            //force user sign out and start log in activity
+                            sign_out_helper();
                         } else {
                             Log.w(TAG, error);   //log class tag, the error code, and what the exception was
-                            Toast.makeText(DeleteUserActivity.this, "Delete user Failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteUserActivity.this, "An error occurred.", Toast.LENGTH_SHORT).show();
                             Toast.makeText(DeleteUserActivity.this, "Please try again.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -115,9 +147,22 @@ public class DeleteUserActivity extends AppCompatActivity {
             });
         } else { //user is null
             Log.w(TAG, "Attempted to delete user. CurrentUser was null");
+            Toast.makeText(DeleteUserActivity.this, "Your account appears to be signed out.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DeleteUserActivity.this, "Please sign in again.", Toast.LENGTH_SHORT).show();
 
-            //return to main activity
-            startActivity(new Intent(DeleteUserActivity.this, MainActivity.class));
+            //sign out and go to login
+            sign_out_helper();
         }
+    }
+
+    /**\
+     * Helper method to sign out user and force them to go the login page
+     */
+    private void sign_out_helper() {
+        //force the user to sign out
+        FirebaseAuth.getInstance().signOut();
+
+        //go to the login activity
+        startActivity(new Intent(DeleteUserActivity.this, LoginCreateAccountActivity.class));
     }
 }
