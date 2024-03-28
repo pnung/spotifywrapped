@@ -91,14 +91,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-
-
         settingsMenu.show();
     }
-
-
-
-
 
     private void handleUserAuthentication() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -184,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUIWithWraps(List<Wrap> wraps) {
-        // Update your RecyclerView adapter with the list of wraps
     }
 
 
@@ -208,15 +201,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeEmail() {
-        // This would lead to an activity or a dialog where the user can change their email.
-        Log.d(TAG, "Change Email Clicked");
-        // Implementation details will vary based on how you have set up the email change functionality.
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(MainActivity.this, ChangeEmailActivity.class));
+        finish();
     }
 
     private void changePassword() {
-        // This would lead to an activity or a dialog where the user can change their password.
-        Log.d(TAG, "Change Password Clicked");
-        // Implementation details will vary based on how you have set up the password change functionality.
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(MainActivity.this, ChangePasswordActivity.class));
+        finish();
     }
 
     @Override

@@ -19,6 +19,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ChangePasswordActivity extends AppCompatActivity {
@@ -80,32 +84,100 @@ public class ChangePasswordActivity extends AppCompatActivity {
             user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() { //validate text field input against user credential to reauth and allow password change
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {  //password changed
-                                Log.d(TAG, "User password successfully changed.");  //log tag, short message on success
+                    if (task.isSuccessful()) { //reauth succeeded
+                        user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {  //password changed
+                                    Log.d(TAG, "User password successfully changed.");  //log tag, short message on success
 
-                                //return to main activity
-                                startActivity(new Intent(ChangePasswordActivity.this, MainActivity.class));
+                                    //return to main activity
+                                    startActivity(new Intent(ChangePasswordActivity.this, MainActivity.class));
 
-                                //make toast to tell user password changed successfully
-                                Toast.makeText(ChangePasswordActivity.this, "Password Changed Successfully", Toast.LENGTH_SHORT).show();
-                            } else {    //password failed to change
-                                Log.w(TAG, "User password change failed.", task.getException());    //log tag, short message, generated exception
+                                    //make toast to tell user password changed successfully
+                                    Toast.makeText(ChangePasswordActivity.this, "Password Changed Successfully", Toast.LENGTH_SHORT).show();
+                                } else {    //password failed to change
+                                    Log.w(TAG, "User password change failed.", task.getException());    //log tag, short message, generated exception
 
-                                //tell user password change failed
-                                Toast.makeText(ChangePasswordActivity.this, "Password Change Failed. Please try again.", Toast.LENGTH_SHORT).show();
+                                    Exception error = task.getException();
+
+                                    if (error == null) {
+                                        Log.w(TAG, "task.getException() was null");   //log class tag, a short message, and what the exception was
+                                        Toast.makeText(ChangePasswordActivity.this, "Failed to change password. Please try again", Toast.LENGTH_SHORT).show();
+
+                                    } else if (error instanceof FirebaseAuthWeakPasswordException) { //password is too weak. tell user why and have them try again
+                                        Log.w(TAG, "Password was too weak", task.getException());
+                                        Toast.makeText(ChangePasswordActivity.this, "Password is too weak.", Toast.LENGTH_SHORT).show();
+                                        String reason = ((FirebaseAuthWeakPasswordException) error).getReason();
+                                        Toast.makeText(ChangePasswordActivity.this, "Reason: " + reason, Toast.LENGTH_SHORT).show();
+
+                                    } else if (error instanceof FirebaseAuthInvalidUserException) {
+                                        Log.w(TAG, ((FirebaseAuthInvalidUserException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
+                                        Toast.makeText(ChangePasswordActivity.this, "Your account status appears to have changed.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ChangePasswordActivity.this, "Please log in again", Toast.LENGTH_SHORT).show();
+
+                                        //force user to sign out and go to login page
+                                        sign_out_helper();
+                                    } else if (error instanceof FirebaseAuthRecentLoginRequiredException) {
+                                        Log.w(TAG, ((FirebaseAuthRecentLoginRequiredException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
+                                        Toast.makeText(ChangePasswordActivity.this, "Your account has not logged in recently.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ChangePasswordActivity.this, "Please log in again", Toast.LENGTH_SHORT).show();
+
+                                        //force user sign out and start login activity
+                                        sign_out_helper();
+                                    } else {
+                                        Toast.makeText(ChangePasswordActivity.this, "An error occurred.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ChangePasswordActivity.this, "Please try again.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                             }
+                        });
+                    } else { //reauth failed
+                        Exception error = task.getException();  //put the exception into a variable
+
+                        //determine what the error is and respond accordingly
+                        if (error == null) {
+                            Log.w(TAG, "task.getException() was null");   //log class tag, a short message, and what the exception was
+                            Toast.makeText(ChangePasswordActivity.this, "Failed to change password.", Toast.LENGTH_SHORT).show();
+
+                        } else if (error instanceof FirebaseAuthInvalidCredentialsException) { //something about the credential is wrong
+                            Log.w(TAG, ((FirebaseAuthInvalidCredentialsException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
+                            Toast.makeText(ChangePasswordActivity.this, "Failed to verify account information.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChangePasswordActivity.this, "Are you sure your login information is correct?", Toast.LENGTH_SHORT).show();
+
+                        } else if (error instanceof FirebaseAuthInvalidUserException) { //user account is disabled, deleted, or credentials changed on another device
+                            Log.w(TAG, ((FirebaseAuthInvalidUserException) error).getErrorCode(), error);   //log class tag, the error code, and what the exception was
+                            Toast.makeText(ChangePasswordActivity.this, "Your account status appears to have changed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChangePasswordActivity.this, "Please log in again", Toast.LENGTH_SHORT).show();
+
+                            //force user sign out and start log in activity
+                            sign_out_helper();
+                        } else {
+                            Log.w(TAG, error);   //log class tag, the error code, and what the exception was
+                            Toast.makeText(ChangePasswordActivity.this, "An error occurred.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChangePasswordActivity.this, "Please try again.", Toast.LENGTH_SHORT).show();
                         }
-                    });
+                    }
                 }
             });
-        } else { //user was null. return to main activity, which will force user to sign in activity
+        } else { //user was null. return to login
             Log.w(TAG, "Attempted to change user password. CurrentUser was null.");
+            Toast.makeText(ChangePasswordActivity.this, "Your account appears to be signed out.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChangePasswordActivity.this, "Please sign in again.", Toast.LENGTH_SHORT).show();
 
-            //return to main activity, which will force the user to the sign in (user was null)
-            startActivity(new Intent(ChangePasswordActivity.this, MainActivity.class));
+            //sign out user and go to login page
+            sign_out_helper();
         }
+    }
+
+    /**
+     * Helper method to sign out user and force them to go to the sign in page
+     */
+    private void sign_out_helper() {
+        //force the user to sign out
+        FirebaseAuth.getInstance().signOut();
+
+        //go to the login activity
+        startActivity(new Intent(ChangePasswordActivity.this, LoginCreateAccountActivity.class));
     }
 }

@@ -26,7 +26,7 @@ public class LoginCreateAccountActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-//    private EditText emailEntry;
+    //    private EditText emailEntry;
 //    private EditText passwordEntry;
     private TextView pageStateTextView;
 
